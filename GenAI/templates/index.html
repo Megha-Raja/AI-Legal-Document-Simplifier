@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Legal Document Simplifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f7fb;
+            color: #111827;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+        }
+        .app-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 64px;
+        }
+        /* Top Navbar */
+        .topbar {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: #111827;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+        .brand i { color: #2563eb; }
+        .nav-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #374151;
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        .nav-btn i { color: #2563eb; }
+        .nav-btn.active, .nav-btn:hover {
+            background: #eef2ff;
+            color: #111827;
+            border-color: #c7d2fe;
+            transform: translateY(-1px);
+        }
+        /* Panels */
+        .panel {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            margin-top: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+        }
+        .panel.active { display: block; }
+        .panel h2 {
+            color: #111827;
+            font-size: 1.3rem;
+            margin-bottom: 14px;
+        }
+        .muted { color: #6b7280; }
+        /* Home panel */
+        .hero {
+            background: linear-gradient(180deg, #ffffff, #f3f6ff);
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 18px;
+        }
+        .hero h1 { color: #0f172a; font-weight: 800; }
+        .hero p { color: #374151; margin: 0; }
+        .howto {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .step {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .step i { color: #2563eb; }
+        .step h6 { color: #0f172a; margin: 8px 0 6px; }
+        .step p { color: #6b7280; margin: 0; }
+        /* Controls */
+        .ctrl {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .ctrl label { color: #111827; font-weight: 600; }
+        .ctrl .form-select, .ctrl .form-control {
+            background: #ffffff;
+            color: #111827;
+            border-color: #d1d5db;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            border: 0;
+            font-weight: 700;
+        }
+        .btn-warning { background: linear-gradient(90deg, #fbbf24, #f97316); border: 0; font-weight: 700; }
+        .btn-info { background: linear-gradient(90deg, #22d3ee, #60a5fa); border: 0; font-weight: 700; }
+        .btn-success { background: linear-gradient(90deg, #22c55e, #10b981); border: 0; font-weight: 700; }
+        /* Cards */
+        .card-like {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .badge-soft { background: #f3f4f6; color: #111827; border: 1px solid #e5e7eb; }
+        .message.user { background: #e0ecff; color: #1e3a8a; }
+        .message.bot { background: #f9fafb; color: #374151; border: 1px solid #e5e7eb; }
+        .chat-messages { max-height: 380px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <div class="topbar">
+        <div class="brand">
+            <i class="fas fa-scale-balanced"></i>
+            <span>AI Legal Document Simplifier</span>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn active" data-target="home"><i class="fas fa-house"></i> Home</button>
+            <button class="nav-btn" data-target="analyze"><i class="fas fa-file-circle-check"></i> Analyze</button>
+            <button class="nav-btn" data-target="risks"><i class="fas fa-shield-halved"></i> Risk Assessment</button>
+            <button class="nav-btn" data-target="chat"><i class="fas fa-robot"></i> Chatbot</button>
+        </div>
+    </div>
+
+    <!-- HOME -->
+    <section id="home" class="panel active">
+        <div class="hero">
+            <h1>All your legal documents made simple</h1>
+            <p>From rental to employment to land agreements — clear, plain summaries and answers in your preferred language with just a few taps.</p>
+        </div>
+        <div class="howto">
+            <div class="step">
+                <i class="fas fa-upload fa-lg"></i>
+                <h6>1. Upload</h6>
+                <p>Drag, drop, done — your document starts here.</p>
+            </div>
+            <div class="step">
+                <i class="fas fa-language fa-lg"></i>
+                <h6>2. Choose Language</h6>
+                <p>Pick your language — we’ll speak it fluently.</p>
+            </div>
+            <div class="step">
+                <i class="fas fa-list-check fa-lg"></i>
+                <h6>3. Analyze</h6>
+                <p>Get clear, bite‑sized highlights in seconds.</p>
+            </div>
+            <div class="step">
+                <i class="fas fa-comments fa-lg"></i>
+                <h6>4. Ask</h6>
+                <p>Ask anything — no legalese, just straight answers.</p>
+            </div>
+        </div>
+        <div class="mt-3">
+            <a class="btn btn-primary" onclick="switchPanel('analyze')"><i class="fas fa-arrow-right"></i> Get Started</a>
+        </div>
+    </section>
+
+    <!-- ANALYZE -->
+    <section id="analyze" class="panel">
+        <h2>Analyze Document</h2>
+        
+        <!-- Initial centered box -->
+        <div id="analyzeInitial" class="d-flex justify-content-center align-items-start" style="min-height: 280px;">
+            <div class="card-like" style="max-width: 720px; width: 100%;">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="ctrl">
+                            <label class="form-label">Upload PDF/DOCX</label>
+                            <input type="file" id="fileInput" class="form-control" accept=".pdf,.docx">
+                            <div id="fileInfo" class="mt-2" style="display:none;">
+                                <span class="badge rounded-pill badge-soft"><i class="fas fa-file"></i> <span id="fileName"></span></span>
+                                <div class="small muted mt-1">Format: <span id="fileFormat"></span> • Words: <span id="wordCount"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ctrl">
+                            <label class="form-label">Analysis Language</label>
+                            <select class="form-select" id="languageSelect">
+                                {% for name, code in languages.items() %}
+                                <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 d-grid">
+                        <button class="btn btn-primary btn-lg" onclick="analyzeDocument()"><i class="fas fa-wand-magic-sparkles"></i> Analyze</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results layout: show only analysis output -->
+        <div id="analyzeResults" class="row g-3" style="display:none;">
+            <div class="col-12">
+                <div class="card-like" id="summaryCard" style="display:none;">
+                    <h5 class="mb-2"><i class="fas fa-list"></i> Summary & Key Points</h5>
+                    <div id="summaryContent"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RISKS -->
+    <section id="risks" class="panel">
+        <h2>Risk Assessment</h2>
+        <div class="card-like" id="risksCard" style="display:none;">
+            <div id="risksContent"></div>
+            <button class="btn btn-success mt-3" onclick="getSafetyRecommendation()"><i class="fas fa-scale-balanced"></i> Get Safety Recommendation</button>
+        </div>
+        <div class="card-like" id="safetyCard" style="display:none;">
+            <h5 class="text-light"><i class="fas fa-circle-check"></i> Safety Recommendation</h5>
+            <div id="safetyContent"></div>
+        </div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="chat" class="panel">
+        <h2>Chatbot</h2>
+        <div class="card-like">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="input-group mt-2">
+                <input type="text" class="form-control" id="chatInput" placeholder="Ask about terms, risks, and safety...">
+                <button class="btn btn-primary" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <div class="text-center mt-3" id="loading" style="display:none;">
+        <div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>
+        <div class="small muted mt-2">Processing...</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Section switching
+    const navButtons = document.querySelectorAll('.nav-btn');
+    let risksLoaded = false;
+    function switchPanel(id) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        navButtons.forEach(b => b.classList.remove('active'));
+        document.querySelector(`.nav-btn[data-target="${id}"]`).classList.add('active');
+        // Auto-run risk detection when opening Risk Assessment if we have a document
+        if (id === 'risks' && documentData && !risksLoaded) {
+            detectRisks(true);
+        }
+    }
+    navButtons.forEach(btn => btn.addEventListener('click', () => switchPanel(btn.dataset.target)));
+
+    // Upload
+    let documentData = null;
+    const fileInput = document.getElementById('fileInput');
+    const fileInputR = document.getElementById('fileInputR');
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) uploadFile(file, 'initial');
+        });
+    }
+    if (fileInputR) {
+        fileInputR.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) uploadFile(file, 'results');
+        });
+    }
+
+    function uploadFile(file, source) {
+        const formData = new FormData();
+        formData.append('file', file);
+        showLoading();
+        fetch('/upload', { method: 'POST', body: formData, credentials: 'same-origin' })
+            .then(r => r.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    documentData = data;
+                    const setInfo = (suffix) => {
+                        const nameEl = document.getElementById('fileName' + suffix);
+                        const fmtEl = document.getElementById('fileFormat' + suffix);
+                        const wcEl = document.getElementById('wordCount' + suffix);
+                        const infoEl = document.getElementById('fileInfo' + suffix);
+                        if (nameEl) nameEl.textContent = data.filename;
+                        if (fmtEl) fmtEl.textContent = data.format;
+                        if (wcEl) wcEl.textContent = data.word_count;
+                        if (infoEl) infoEl.style.display = 'block';
+                    };
+                    setInfo('');
+                    setInfo('R');
+                } else { alert('Error: ' + data.error); }
+            })
+            .catch(err => { hideLoading(); alert('Upload failed: ' + err); });
+    }
+
+    function analyzeDocument(fromResults) {
+        const language = fromResults ? (document.getElementById('languageSelectR')?.value || 'English') : document.getElementById('languageSelect').value;
+        showLoading();
+        fetch('/analyze', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+            body: JSON.stringify({ language })
+        })
+        .then(r => r.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) { displaySummary(data.summary); }
+            else { alert('Error: ' + data.error); }
+        })
+        .catch(err => { hideLoading(); alert('Analysis failed: ' + err); });
+    }
+
+    function detectRisks(autoOpen) {
+        const language = document.getElementById('languageSelect').value;
+        showLoading();
+        fetch('/risks', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+            body: JSON.stringify({ language })
+        })
+        .then(r => r.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) { displayRisks(data.risks); }
+            else { alert('Error: ' + data.error); }
+            // mark as loaded and optionally fetch safety right away
+            if (data.success) {
+                risksLoaded = true;
+            }
+        })
+        .catch(err => { hideLoading(); alert('Risk detection failed: ' + err); });
+    }
+
+    function getSafetyRecommendation() {
+        const language = document.getElementById('languageSelect').value;
+        showLoading();
+        fetch('/safety', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+            body: JSON.stringify({ language })
+        })
+        .then(r => r.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) { displaySafetyRecommendation(data.recommendation); }
+            else { alert('Error: ' + data.error); }
+        })
+        .catch(err => { hideLoading(); alert('Safety analysis failed: ' + err); });
+    }
+
+    function displaySummary(summary) {
+        const content = `
+            <div class="mt-2">
+                <div class="muted">Brief Summary</div>
+                <div>${summary.summary}</div>
+            </div>
+            <div class="mt-3">
+                <div class="muted">Key Points</div>
+                <ul>${summary.key_points.map(p => `<li>${p}</li>`).join('')}</ul>
+            </div>
+            ${summary.important_dates.length ? `<div class=\"mt-3\"><div class=\"muted\">Important Dates</div><ul>${summary.important_dates.map(d => `<li>${d}</li>`).join('')}</ul></div>` : ''}
+            ${summary.parties.length ? `<div class=\"mt-3\"><div class=\"muted\">Main Parties</div><ul>${summary.parties.map(p => `<li>${p}</li>`).join('')}</ul></div>` : ''}
+        `;
+        document.getElementById('summaryContent').innerHTML = content;
+        document.getElementById('summaryCard').style.display = 'block';
+        // switch to results layout (single column)
+        const init = document.getElementById('analyzeInitial');
+        const res = document.getElementById('analyzeResults');
+        if (init && res) {
+            init.style.display = 'none';
+            res.style.display = 'block';
+        }
+    }
+
+    function displayRisks(risks) {
+        let content = `
+            <div class="row g-3">
+                <div class="col">
+                    <div class="card-like text-center">
+                        <div class="muted">High</div>
+                        <div class="text-danger fs-4 fw-bold">${risks.high_risk_count}</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-like text-center">
+                        <div class="muted">Medium</div>
+                        <div class="text-warning fs-4 fw-bold">${risks.medium_risk_count}</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-like text-center">
+                        <div class="muted">Low</div>
+                        <div class="text-success fs-4 fw-bold">${risks.low_risk_count}</div>
+                    </div>
+                </div>
+            </div>`;
+        if (risks.risks && risks.risks.length) {
+            content += risks.risks.map(r => `
+                <div class="card-like mt-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-semibold"><i class="fas fa-triangle-exclamation"></i> ${r.type}</div>
+                        <span class="badge ${r.severity==='High' ? 'bg-danger' : r.severity==='Medium' ? 'bg-warning text-dark' : 'bg-success'}">${r.severity}</span>
+                    </div>
+                    <div class="mt-2 muted">${r.description}</div>
+                    ${r.excerpt ? `<div class="small muted mt-2">“${r.excerpt}”</div>` : ''}
+                </div>
+            `).join('');
+        } else {
+            content += '<div class="card-like mt-2 text-success"><i class="fas fa-circle-check"></i> No significant risks detected.</div>';    
+        }
+        document.getElementById('risksContent').innerHTML = content;
+        document.getElementById('risksCard').style.display = 'block';
+    }
+
+    function displaySafetyRecommendation(rec) {
+        const icon = rec.safety_level === 'SAFE' ? 'circle-check' : (rec.safety_level === 'WARNING' ? 'triangle-exclamation' : 'circle-xmark');
+        const color = rec.safety_level === 'SAFE' ? 'success' : (rec.safety_level === 'WARNING' ? 'warning' : 'danger');
+        const html = `
+            <div class="card-like border border-${color}">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-${icon} text-${color}"></i>
+                    <h5 class="m-0 text-${color}">${rec.safety_level}</h5>
+                </div>
+                <div class="mt-2">${rec.recommendation}</div>
+                ${rec.reasons?.length ? `<div class="mt-2"><div class="muted">Reasons</div><ul>${rec.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : ''}
+                ${rec.suggestions?.length ? `<div class="mt-2"><div class="muted">Suggestions</div><ul>${rec.suggestions.map(x=>`<li>${x}</li>`).join('')}</ul></div>` : ''}
+            </div>`;
+        document.getElementById('safetyContent').innerHTML = html;
+        document.getElementById('safetyCard').style.display = 'block';
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (!message) return;
+        if (!documentData) { alert('Please upload and analyze a document first.'); return; }
+        addMessage(message, 'user');
+        input.value = '';
+        const language = document.getElementById('languageSelect').value;
+        fetch('/chat', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
+            body: JSON.stringify({ question: message, language })
+        })
+        .then(r => r.json())
+        .then(data => { addMessage(data.success ? data.answer : ('Error: ' + data.error), 'bot'); })
+        .catch(err => { addMessage('Error: ' + err, 'bot'); });
+    }
+    function addMessage(text, who) {
+        const wrap = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = 'message ' + who + ' p-2 rounded mb-2';
+        div.innerHTML = text;
+        wrap.appendChild(div);
+        wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function showLoading(){ document.getElementById('loading').style.display='block'; }
+    function hideLoading(){ document.getElementById('loading').style.display='none'; }
+</script>
+</body>
+</html>

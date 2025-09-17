@@ -1,0 +1,55 @@
+SAMPLE TERMS OF SERVICE AGREEMENT
+
+This Terms of Service Agreement ("Agreement") is entered into between TechCorp Inc. ("Company") and the user ("User") effective as of the date of acceptance.
+
+1. ACCEPTANCE OF TERMS
+By accessing, browsing, or using this website and services, you acknowledge that you have read, understood, and agree to be bound by these terms and all applicable laws and regulations.
+
+2. PAYMENT TERMS AND BILLING
+2.1 All fees are due within 30 days of invoice date.
+2.2 Late payments will incur a penalty fee of 5% per month or the maximum rate allowed by law.
+2.3 You authorize us to charge your credit card automatically for recurring services.
+2.4 All fees are non-refundable once services have been rendered.
+
+3. DATA COLLECTION AND PRIVACY
+3.1 We collect personal information including name, email, phone number, and payment information.
+3.2 We may share your personal data with third-party service providers and business partners.
+3.3 We reserve the right to use your data for marketing purposes unless you opt out.
+3.4 Data may be stored on servers located outside your country of residence.
+
+4. AUTOMATIC RENEWAL AND TERMINATION
+4.1 This agreement automatically renews for successive one-year periods unless terminated.
+4.2 You must provide 60 days written notice to terminate this agreement.
+4.3 Early termination fees may apply if you cancel before the end of the contract term.
+4.4 We may terminate your account immediately for violation of these terms.
+
+5. LIMITATION OF LIABILITY
+5.1 The company's total liability shall not exceed the amount paid by you in the 12 months preceding the claim.
+5.2 We disclaim all warranties, express or implied, including merchantability and fitness for a particular purpose.
+5.3 We are not responsible for any indirect, incidental, or consequential damages.
+
+6. INTELLECTUAL PROPERTY
+6.1 All content, trademarks, and intellectual property remain the exclusive property of TechCorp Inc.
+6.2 You may not copy, modify, or distribute any content without written permission.
+6.3 Any feedback or suggestions you provide may be used by us without compensation.
+
+7. GOVERNING LAW AND DISPUTES
+7.1 This agreement is governed by the laws of California, United States.
+7.2 Any disputes must be resolved through binding arbitration.
+7.3 You waive your right to participate in class action lawsuits.
+
+8. MODIFICATIONS
+8.1 We reserve the right to modify these terms at any time.
+8.2 Continued use of the service constitutes acceptance of modified terms.
+8.3 We will notify users of material changes via email or website notice.
+
+By using our services, you acknowledge that you have read and agree to these terms.
+
+TechCorp Inc.
+123 Business Street
+San Francisco, CA 94105
+Phone: (555) 123-4567
+Email: legal@techcorp.com
+
+Last Updated: January 1, 2024
+
