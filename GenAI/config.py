@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Gemini API Configuration
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSyBUhJQeUWiQ2Q6N7O1fhRJXPbP2IGzP23g')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'XXXXXXXXXXXXXXXXXXX')
 
 # Supported Indian languages for translation
 SUPPORTED_LANGUAGES = {
@@ -35,3 +35,4 @@ RISK_KEYWORDS = {
     'lock_in': ['termination', 'cancel', 'exit', 'lock-in', 'binding', 'commitment', 'समाप्ति', 'रद्द', 'बाध्यकारी', 'प्रतिबद्धता'],
     'unfair_terms': ['liability', 'disclaimer', 'warranty', 'guarantee', 'responsibility', 'दायित्व', 'अस्वीकरण', 'वारंटी', 'जिम्मेदारी']
 }
+
